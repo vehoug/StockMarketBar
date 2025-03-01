@@ -4,7 +4,7 @@ services:
   backend:
     build: ./backend
     volumes:
-      - stock_data:/app/data  # Shared JSON file
+      - stock_data:/app/data
     restart: always
 
   api:
@@ -14,7 +14,25 @@ services:
     depends_on:
       - backend
     volumes:
-      - stock_data:/app/data  # Shared JSON file
+      - stock_data:/app/data
+    environment:
+      - ASPNETCORE_LOGGING__CONSOLE__LOGLEVEL__DEFAULT=Warning
+      - ASPNETCORE_LOGGING__CONSOLE__LOGLEVEL__MICROSOFT=Warning
+      - ASPNETCORE_LOGGING__CONSOLE__LOGLEVEL__MICROSOFT.AspNetCore=Warning
+    restart: always
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api/prices
+      - CHOKIDAR_USEPOLLING=true
     restart: always
 
 volumes:
