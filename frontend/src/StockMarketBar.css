@@ -1,0 +1,81 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    background-color: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .dashboard {
+    width: 90vw;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .title {
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+  
+  .stock-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #222;
+  }
+  
+  .stock-table th, .stock-table td {
+    padding: 15px;
+    text-align: left;
+  }
+  
+  .stock-table th {
+    background: #004080;
+    color: white;
+  }
+  
+  .stock-table td {
+    background: #333;
+    transition: background 0.5s ease-in-out;
+  }
+  
+  .price-row.up td {
+    background: #006600;
+  }
+  
+  .price-row.down td {
+    background: #800000;
+  }
+  
+  .trend {
+    font-size: 1.5em;
+  }
+
+  .price-up {
+    color: green;
+    font-weight: bold;
+  }
+  
+  .price-down {
+    color: red;
+    font-weight: bold;
+  }
+
+  .arrow {
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+
+  .up {
+    color: green;
+  }
+
+  .down {
+    color: red;
+  }
+   
