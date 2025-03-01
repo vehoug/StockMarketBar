@@ -1,0 +1,39 @@
+body {
+  background-color: #000000;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  background: #292929;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  text-align: center;
+}
+
+.drink {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.price {
+  font-weight: bold;
+}
+
+.up {
+  color: #4caf50; /* Green */
+}
+
+.down {
+  color: #ff4c4c; /* Red */
+}
+
