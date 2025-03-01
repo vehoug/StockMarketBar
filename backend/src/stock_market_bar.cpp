@@ -2,7 +2,7 @@
 
 using json = nlohmann::json;
 
-#define STEP_DIST 0.1
+#define STEP_DIST 0.3
 #define EVENT_DIST 0.2
 #define EVENT_TRIGGER_DIST 100
 #define MOMENTUM_DIST 0.3
@@ -15,23 +15,38 @@ StockMarketBar::StockMarketBar()
 {
     drink_prices = 
     {
-        {"vodka_redbull", 30},
-        {"gin_tonic", 25},
-        {"storm", 35}
+        {"Vodka Redbull", 30},
+        {"Gin Tonic", 25},
+        {"Storm Hard Seltzer", 35},
+        {"Mojito", 25},
+        {"Dahls Pilser 0.5L", 30},
+        {"Schous Pilsner 0.5L", 40},
+        {"Jaegermeister 25mL", 30},
+        {"Rum & Coke", 20}
     };
 
     volatilities = 
     {
-        {"vodka_redbull", 0.1},
-        {"gin_tonic", 0.2},
-        {"storm", 0.3}
+        {"Vodka Redbull", 0.4},
+        {"Gin Tonic", 0.2},
+        {"Storm Hard Seltzer", 0.1},
+        {"Mojito", 0.3},
+        {"Dahls Pilser 0.5L", 0.3},
+        {"Schous Pilsner 0.5L", 0.05},
+        {"Jaegermeister 25mL", 0.5},
+        {"Rum & Coke", 0.4}
     };
 
     trends = 
     {
-        {"vodka_redbull", 0.0},
-        {"gin_tonic", 0.0},
-        {"storm", 0.0}
+        {"Vodka Redbull", 0.0},
+        {"Gin Tonic", 0.0},
+        {"Storm Hard Seltzer", 0.0},
+        {"Mojito", 0.0},
+        {"Dahls Pilser 0.5L", 0.0},
+        {"Schous Pilsner 0.5L", 0.0},
+        {"Jaegermeister 25mL", 0.0},
+        {"Rum & Coke", 0.0}
     };
 }
 
@@ -43,7 +58,7 @@ void StockMarketBar::updatePrices()
         double random_step = step_distance(random_number_generator) * volatilities.at(drink);;
         price += random_step + trend_factor;
 
-        /* TODO: Min/max price hask map */
+        /* TODO: Min/max price hash map */
         price = std::clamp(price, static_cast<double>(15.0), static_cast<double>(50.0));
         std::cout << "Price of " << drink << ": " << price << '\n';
     }
