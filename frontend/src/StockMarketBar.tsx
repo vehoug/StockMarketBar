@@ -53,21 +53,18 @@ const StockMarketBar: React.FC = () => {
             <tr>
               <th>DRINK</th>
               <th>PRICE (NOK)</th>
-              <th>TREND</th>
             </tr>
           </thead>
           <tbody>
             {Object.entries(prices).map(([drink, price]) => (
               <tr key={drink} className={`price-row`}>
                 <td>{drink}</td>
-                <td className={trends[drink] === "up" ? "price-up" : trends[drink] === "down" ? "price-down" : ""}>
-                  {price.toFixed(2)}
-                </td>
-                <td className="trend ${trends[drink]}">
-                  <span className={'arrow ${trends[drink]}'}>
-                    {trends[drink] === "up" ? "🡩" : trends[drink] === "down" ? "🡫" : "-"}
-                  </span>
-                </td>
+                  <td className={trends[drink] === "up" ? "price-up" : trends[drink] === "down" ? "price-down" : ""}>
+                    <span className={trends[drink] === "up" ? "arrow-up" : trends[drink] === "down" ? "arrow-down" : "arrow-neutral"}>
+                      {trends[drink] === "up" ? "▲ " : trends[drink] === "down" ? "▼ " : "- "}
+                    </span>
+                    {price.toFixed(2)}
+                  </td>
               </tr>
             ))}
           </tbody>

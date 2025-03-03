@@ -33,6 +33,7 @@ body, html {
   .stock-table th, .stock-table td {
     padding: 15px;
     text-align: left;
+    font-size: 2.0em;
   }
   
   .stock-table th {
@@ -46,7 +47,7 @@ body, html {
   }
   
   .price-row.up td {
-    background: #006600;
+    background: #00ff00;
   }
   
   .price-row.down td {
@@ -58,7 +59,7 @@ body, html {
   }
 
   .price-up {
-    color: green;
+    color: rgb(0, 235, 0);
     font-weight: bold;
   }
   
@@ -72,11 +73,21 @@ body, html {
     font-weight: bold;
   }
 
-  .up {
-    color: green;
+  .arrow-up {
+    color: rgb(0, 235, 0);
+    font-size: 1.0em;
+    font-weight: bold;
+  }
+  
+  .arrow-down {
+    color: red;
+    font-size: 1.0em;
+    font-weight: bold;
   }
 
-  .down {
-    color: red;
+  .arrow-neutral {
+    color: white;
+    font-size: 1.0em;
+    font-weight: bold;
   }
    
