@@ -52,16 +52,25 @@ StockMarketBar::StockMarketBar()
 
 void StockMarketBar::updatePrices()
 {
-    for (auto& [drink, price] : drink_prices)
+    auto now = std::chrono::system_clock::now();
+
+    for (auto& [drink, data] : drinks)
     {
         double trend_factor = trends.at(drink);
         double random_step = step_distance(random_number_generator) * volatilities.at(drink);;
-        price += random_step + trend_factor;
+        data.current_price += random_step + trend_factor;
 
         /* TODO: Min/max price hash map */
-        price = std::clamp(price, static_cast<double>(15.0), static_cast<double>(50.0));
-        std::cout << "Price of " << drink << ": " << price << '\n';
-    }
+        data.current_price = std::clamp(data.current_price, static_cast<double>(15.0), static_cast<double>(50.0));
+
+        auto duration = std::chrono::duration_cast<std::chrono::minutes>(now - data.last_updated).count();
+
+        if (duration >= 60)
+        {
+            data.price_1h_ago = data.current_price;
+            data.last_updated = now;
+        } 
+    } 
 
     tick_counter++;
     if (tick_counter % 20 == 0)
