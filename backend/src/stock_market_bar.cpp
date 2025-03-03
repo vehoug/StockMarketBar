@@ -76,17 +76,19 @@ void StockMarketBar::triggerEvent()
     
     if (event_probability < 20) 
     {
-        std::cout << "[EVENT TRIGGERED]: Happy hour!\n";
+        /* Happy Hour event trigger */
         std::for_each(drink_prices.begin(), drink_prices.end(), [](std::pair<const std::string, double>& drink) 
         {
             drink.second *= 0.85;
+            std::clamp(drink.second, static_cast<double>(15.0), static_cast<double>(50.0));
         });
     } else 
     {
-        std::cout << "[EVENT TRIGGERED]: Prices spiking!\n";
+        /* Prices spiking event trigger */
         std::for_each(drink_prices.begin(), drink_prices.end(), [](std::pair<const std::string, double>& drink) 
         {
             drink.second *= 1.15;
+            std::clamp(drink.second, static_cast<double>(15.0), static_cast<double>(50.0));
         });
     }
 }
