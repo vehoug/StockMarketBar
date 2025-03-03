@@ -29,7 +29,7 @@ public:
     void savePricesToJSON();
 
 private:
-    std::unordered_map<std::string, double> drink_prices;
+    std::unordered_map<std::string, DrinkData> drinks;
     std::unordered_map<std::string, double> trends;
     std::unordered_map<std::string, double> volatilities;
 

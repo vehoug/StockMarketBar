@@ -13,16 +13,16 @@ StockMarketBar::StockMarketBar()
     momentum_distance(-MOMENTUM_DIST, MOMENTUM_DIST), tick_counter(0), 
     outputFile("/app/data/stock_prices.json") 
 {
-    drink_prices = 
+    drinks = 
     {
-        {"Vodka Redbull", 30},
-        {"Gin Tonic", 25},
-        {"Storm Hard Seltzer", 35},
-        {"Mojito", 25},
-        {"Dahls Pilser 0.5L", 30},
-        {"Schous Pilsner 0.5L", 40},
-        {"Jaegermeister 25mL", 30},
-        {"Rum & Coke", 20}
+        {"Vodka Redbull", {30, 30, std::chrono::system_clock::now()}},
+        {"Gin Tonic", {25, 25, std::chrono::system_clock::now()}},
+        {"Storm Hard Seltzer", {35, 35, std::chrono::system_clock::now()}},
+        {"Mojito", {25, 25, std::chrono::system_clock::now()}},
+        {"Dahls Pilser 0.5L", {30, 30, std::chrono::system_clock::now()}},
+        {"Schous Pilsner 0.5L", {40, 40, std::chrono::system_clock::now()}},
+        {"Jaegermeister 25mL", {30, 30, std::chrono::system_clock::now()}},
+        {"Rum & Coke", {20, 20, std::chrono::system_clock::now()}}
     };
 
     volatilities = 
