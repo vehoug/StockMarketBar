@@ -11,6 +11,13 @@
 #include <string>
 #include <random>
 
+struct DrinkData
+{
+    double current_price;
+    double price_1h_ago;
+    std::chrono::time_point<std::chrono::system_clock> last_updated; 
+};
+
 class StockMarketBar
 {
 public:
