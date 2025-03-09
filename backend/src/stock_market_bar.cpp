@@ -105,7 +105,25 @@ void StockMarketBar::triggerEvent()
 void StockMarketBar::savePricesToJSON()
 {
     std::ofstream file(outputFile);
-    (!file) ? std::cerr << "Error opening file " << outputFile << '\n' :
-    file << json(drink_prices).dump(4);
+    if (!file)
+    {
+        std::cerr << "Error opening file " << outputFile << '\n';
+        return;
+    }
+
+    json j;
+    for (const auto& [drink, prices] : drinks) {
+        double current_price = prices.current_price;
+        double price_1h_ago = prices.price_1h_ago;
+        double percentage_change = (price_1h_ago > 0) ?
+            ((current_price - price_1h_ago) / price_1h_ago) * 100 : 0;
+
+        j[drink] = {
+            {"price", current_price},
+            {"percentageChange", percentage_change}
+        };
+    }
+
+    file << j.dump(4);
     file.close();
 }
