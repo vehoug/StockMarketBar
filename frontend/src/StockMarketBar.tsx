@@ -5,7 +5,12 @@ import "./StockMarketBar.css";
 const API_URL = process.env.REACT_APP_API_URL || "http://api:5000/api/prices";
 
 interface DrinkPrice {
-  [key: string]: number;
+  price: number;
+  percentageChange: number;
+}
+
+interface PricesResponse {
+  [key: string]: DrinkPrice;
 }
 
 interface DrinkTrend {
@@ -13,8 +18,8 @@ interface DrinkTrend {
 }
 
 const StockMarketBar: React.FC = () => {
-  const [prices, setPrices] = useState<DrinkPrice>({});
-  const [prevPrices, setPrevPrices] = useState<DrinkPrice>({});
+  const [prices, setPrices] = useState<PricesResponse>({});
+  const [prevPrices, setPrevPrices] = useState<PricesResponse>({});
   const [trends, setTrends] = useState<DrinkTrend>({});
   const [error, setError] = useState<string | null>(null);
 
@@ -27,8 +32,10 @@ const StockMarketBar: React.FC = () => {
 
         const newTrends: DrinkTrend = {};
         Object.keys(response.data).forEach(drink => {
-          const prevPrice = prevPrices[drink] || response.data[drink];
-          newTrends[drink] = response.data[drink] > prevPrice ? "up" : response.data[drink] < prevPrice ? "down" : trends[drink] || "";
+          const prevPrice = prevPrices[drink]?.price || response.data[drink].price;
+          newTrends[drink] = response.data[drink].price > prevPrice ? "up" 
+                            : response.data[drink].price < prevPrice ? "down" 
+                            : trends[drink] || "";
         });
         setTrends(newTrends);
       } catch (err) {
@@ -53,19 +60,19 @@ const StockMarketBar: React.FC = () => {
             <tr>
               <th>DRINK</th>
               <th>PRICE (NOK)</th>
-              <th>TREND</th>
             </tr>
           </thead>
           <tbody>
-            {Object.entries(prices).map(([drink, price]) => (
+            {Object.entries(prices).map(([drink, { price, percentageChange }]) => (
               <tr key={drink} className={`price-row`}>
                 <td>{drink}</td>
                 <td className={trends[drink] === "up" ? "price-up" : trends[drink] === "down" ? "price-down" : ""}>
-                  {price.toFixed(2)}
-                </td>
-                <td className="trend ${trends[drink]}">
-                  <span className={'arrow ${trends[drink]}'}>
-                    {trends[drink] === "up" ? "🡩" : trends[drink] === "down" ? "🡫" : "-"}
+                  <span className={trends[drink] === "up" ? "arrow-up" : trends[drink] === "down" ? "arrow-down" : "arrow-neutral"}>
+                    {trends[drink] === "up" ? "▲ " : trends[drink] === "down" ? "▼ " : "- "}
+                  </span>
+                  {price.toFixed(2)}{" "}
+                  <span className={`percentage ${trends[drink]}`}>
+                    ({percentageChange.toFixed(2)}%)
                   </span>
                 </td>
               </tr>
@@ -78,3 +85,4 @@ const StockMarketBar: React.FC = () => {
 };
 
 export default StockMarketBar;
+
