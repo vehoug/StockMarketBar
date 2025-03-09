@@ -13,16 +13,16 @@ StockMarketBar::StockMarketBar()
     momentum_distance(-MOMENTUM_DIST, MOMENTUM_DIST), tick_counter(0), 
     outputFile("/app/data/stock_prices.json") 
 {
-    drink_prices = 
+    drinks = 
     {
-        {"Vodka Redbull", 30},
-        {"Gin Tonic", 25},
-        {"Storm Hard Seltzer", 35},
-        {"Mojito", 25},
-        {"Dahls Pilser 0.5L", 30},
-        {"Schous Pilsner 0.5L", 40},
-        {"Jaegermeister 25mL", 30},
-        {"Rum & Coke", 20}
+        {"Vodka Redbull", {30, 30, std::chrono::system_clock::now()}},
+        {"Gin Tonic", {25, 25, std::chrono::system_clock::now()}},
+        {"Storm Hard Seltzer", {35, 35, std::chrono::system_clock::now()}},
+        {"Mojito", {25, 25, std::chrono::system_clock::now()}},
+        {"Dahls Pilser 0.5L", {30, 30, std::chrono::system_clock::now()}},
+        {"Schous Pilsner 0.5L", {40, 40, std::chrono::system_clock::now()}},
+        {"Jaegermeister 25mL", {30, 30, std::chrono::system_clock::now()}},
+        {"Rum & Coke", {20, 20, std::chrono::system_clock::now()}}
     };
 
     volatilities = 
@@ -52,16 +52,25 @@ StockMarketBar::StockMarketBar()
 
 void StockMarketBar::updatePrices()
 {
-    for (auto& [drink, price] : drink_prices)
+    auto now = std::chrono::system_clock::now();
+
+    for (auto& [drink, data] : drinks)
     {
         double trend_factor = trends.at(drink);
         double random_step = step_distance(random_number_generator) * volatilities.at(drink);;
-        price += random_step + trend_factor;
+        data.current_price += random_step + trend_factor;
 
         /* TODO: Min/max price hash map */
-        price = std::clamp(price, static_cast<double>(15.0), static_cast<double>(50.0));
-        std::cout << "Price of " << drink << ": " << price << '\n';
-    }
+        data.current_price = std::clamp(data.current_price, static_cast<double>(15.0), static_cast<double>(50.0));
+
+        auto duration = std::chrono::duration_cast<std::chrono::minutes>(now - data.last_updated).count();
+
+        if (duration >= 60)
+        {
+            data.price_1h_ago = data.current_price;
+            data.last_updated = now;
+        } 
+    } 
 
     tick_counter++;
     if (tick_counter % 20 == 0)
@@ -76,17 +85,19 @@ void StockMarketBar::triggerEvent()
     
     if (event_probability < 20) 
     {
-        std::cout << "[EVENT TRIGGERED]: Happy hour!\n";
-        std::for_each(drink_prices.begin(), drink_prices.end(), [](std::pair<const std::string, double>& drink) 
+        /* Happy Hour event trigger */
+        std::for_each(drinks.begin(), drinks.end(), [](std::pair<const std::string, DrinkData>& drink) 
         {
-            drink.second *= 0.85;
+            drink.second.current_price *= 0.85;
+            std::clamp(drink.second.current_price, static_cast<double>(15.0), static_cast<double>(50.0));
         });
     } else 
     {
-        std::cout << "[EVENT TRIGGERED]: Prices spiking!\n";
-        std::for_each(drink_prices.begin(), drink_prices.end(), [](std::pair<const std::string, double>& drink) 
+        /* Prices spiking event trigger */
+        std::for_each(drinks.begin(), drinks.end(), [](std::pair<const std::string, DrinkData>& drink) 
         {
-            drink.second *= 1.15;
+            drink.second.current_price *= 1.15;
+            std::clamp(drink.second.current_price, static_cast<double>(15.0), static_cast<double>(50.0));
         });
     }
 }
@@ -94,7 +105,25 @@ void StockMarketBar::triggerEvent()
 void StockMarketBar::savePricesToJSON()
 {
     std::ofstream file(outputFile);
-    (!file) ? std::cerr << "Error opening file " << outputFile << '\n' :
-    file << json(drink_prices).dump(4);
+    if (!file)
+    {
+        std::cerr << "Error opening file " << outputFile << '\n';
+        return;
+    }
+
+    json j;
+    for (const auto& [drink, prices] : drinks) {
+        double current_price = prices.current_price;
+        double price_1h_ago = prices.price_1h_ago;
+        double percentage_change = (price_1h_ago > 0) ?
+            ((current_price - price_1h_ago) / price_1h_ago) * 100 : 0;
+
+        j[drink] = {
+            {"price", current_price},
+            {"percentageChange", percentage_change}
+        };
+    }
+
+    file << j.dump(4);
     file.close();
 }
